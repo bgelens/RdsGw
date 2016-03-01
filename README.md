@@ -5,7 +5,7 @@ Simple PowerShell module to configure RDS Gateway servers by wrapping over WMI c
 New-RdsGwCap -Name 'RD CAP' -UserGroupNames "$env:COMPUTERNAME\RDS Gateway Users"
 
 #Create RD RAP
-New-RdsGwCap -Name 'RD RAP' -UserGroupNames "$env:COMPUTERNAME\RDS Gateway Users"
+New-RdsGwRap -Name 'RD RAP' -UserGroupNames "$env:COMPUTERNAME\RDS Gateway Users"
 
 #Create and assign self signed certificate
 New-RdsGwSelfSignedCertificate -SubjectName $env:COMPUTERNAME
@@ -18,4 +18,15 @@ Enable-RdsGwServer
 
 #Get RDGW Config
 Get-RdsGwServerConfiguration
+
+#CAP and RAP management
+Get-RdsGwCap
+Get-RdsGwCap -Name 'RD CAP' | Disable-RdsGwCap
+Get-RdsGwCap -Name 'RD CAP' | Enable-RdsGwCap
+Get-RdsGwCap -Name 'RD CAP' | Remove-RdsGwCap
+
+Get-RdsGwRap
+Get-RdsGwRap -Name 'RD RAP' | Disable-RdsGwRap
+Get-RdsGwRap -Name 'RD RAP' | Enable-RdsGwRap
+Get-RdsGwRap -Name 'RD RAP' | Remove-RdsGwRap
 ```
