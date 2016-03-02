@@ -5,9 +5,9 @@ function New-RdsGwCap {
         
         [bool] $Enable = $true,
         
-        [bool] $Password = $true,
+        [bool] $PasswordAuthentication = $true,
         
-        [bool] $Smartcard = $false,
+        [bool] $SmartcardAuthentication = $false,
         
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -26,14 +26,14 @@ function New-RdsGwCap {
         Enabled = $Enable
         IdleTimeout = [uint32]0
         Name = $Name
-        Password = $Password
+        Password = $PasswordAuthentication
         PlugAndPlayDevicesDisabled = $false
         PrintersDisabled = $false
         SecureId = $false
         SerialPortsDisabled = $false
         SessionTimeout = $SessionTimeout
         SessionTimeoutAction = [uint32]0
-        Smartcard = $Smartcard
+        Smartcard = $SmartcardAuthentication
         UserGroupNames = $UserGroupNames   
     }
     try {
