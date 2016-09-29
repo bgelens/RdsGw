@@ -9,6 +9,16 @@ function New-RdsGwCap {
         
         [bool] $SmartcardAuthentication = $false,
         
+		[switch] $DiskDrivesDisabled,
+        
+        [switch] $PlugAndPlayDevicesDisabled,
+
+		[switch] $PrintersDisabled,
+
+		[switch] $SerialPortsDisabled,
+
+		[switch] $ClipboardDisabled,
+
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [String] $UserGroupNames,
@@ -16,26 +26,46 @@ function New-RdsGwCap {
         [uint32] $SessionTimeout = 0
     )
 
+    #Somehow, only when all options are set to false AND DeviceRedirectionType is set to 2, the AllowOnlySDRServers setting is ingored and set to $true, so correct this behavior
+    If ((!($DiskDrivesDisabled)) -and (!($PlugAndPlayDevicesDisabled)) -and (!($PrintersDisabled)) -and (!($SerialPortsDisabled)) -and (!($ClipboardDisabled)))
+    {
+        $DeviceRedirectionType = [uint32]0
+    }
+    Else
+    {
+        $DeviceRedirectionType = [uint32]2
+    }
+
     $CapArgs = @{
         AllowOnlySDRServers = $false
-        ClipboardDisabled = $false
+        ClipboardDisabled = $ClipboardDisabled
         ComputerGroupNames = [string]::Empty
         CookieAuthentication = $true
-        DeviceRedirectionType = [uint32]0
-        DiskDrivesDisabled = $false
+        DeviceRedirectionType = $DeviceRedirectionType
+        <#
+        Specifies which devices will be redirected.
+        0 All devices will be redirected.
+        1 No devices will be redirected.
+        2 Specified devices will not be redirected. The DiskDrivesDisabled, PrintersDisabled, SerialPortsDisabled, ClipboardDisabled, and PlugAndPlayDevicesDisabled properties control which devices will not be redirected.
+        #>
+        DiskDrivesDisabled  = $DiskDrivesDisabled
         Enabled = $Enable
+        #HasNapAttributes = $false
         IdleTimeout = [uint32]0
         Name = $Name
+        #Order                       : 1
         Password = $PasswordAuthentication
-        PlugAndPlayDevicesDisabled = $false
-        PrintersDisabled = $false
+        PlugAndPlayDevicesDisabled = $PlugAndPlayDevicesDisabled
+        PrintersDisabled = $PrintersDisabled
         SecureId = $false
-        SerialPortsDisabled = $false
-        SessionTimeout = $SessionTimeout
+        SerialPortsDisabled = $SerialPortsDisabled
+        SessionTimeout  = $SessionTimeout
         SessionTimeoutAction = [uint32]0
         Smartcard = $SmartcardAuthentication
-        UserGroupNames = $UserGroupNames   
+        UserGroupNames = $UserGroupNames
     }
+
+
     try {
         $Invoke = Invoke-CimMethod -Namespace root/CIMV2/TerminalServices -ClassName Win32_TSGatewayConnectionAuthorizationPolicy -MethodName Create -Arguments $CapArgs
         if ($Invoke.ReturnValue -ne 0) {
