@@ -9,15 +9,15 @@ function New-RdsGwCap {
         
         [bool] $SmartcardAuthentication = $false,
         
-		[switch] $DiskDrivesDisabled,
+        [switch] $DiskDrivesDisabled,
         
         [switch] $PlugAndPlayDevicesDisabled,
 
-		[switch] $PrintersDisabled,
+        [switch] $PrintersDisabled,
 
-		[switch] $SerialPortsDisabled,
+        [switch] $SerialPortsDisabled,
 
-		[switch] $ClipboardDisabled,
+        [switch] $ClipboardDisabled,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -27,12 +27,9 @@ function New-RdsGwCap {
     )
 
     #Somehow, only when all options are set to false AND DeviceRedirectionType is set to 2, the AllowOnlySDRServers setting is ingored and set to $true, so correct this behavior
-    If ((!($DiskDrivesDisabled)) -and (!($PlugAndPlayDevicesDisabled)) -and (!($PrintersDisabled)) -and (!($SerialPortsDisabled)) -and (!($ClipboardDisabled)))
-    {
+    if ((!($DiskDrivesDisabled)) -and (!($PlugAndPlayDevicesDisabled)) -and (!($PrintersDisabled)) -and (!($SerialPortsDisabled)) -and (!($ClipboardDisabled))) {
         $DeviceRedirectionType = [uint32]0
-    }
-    Else
-    {
+    } else {
         $DeviceRedirectionType = [uint32]2
     }
 
